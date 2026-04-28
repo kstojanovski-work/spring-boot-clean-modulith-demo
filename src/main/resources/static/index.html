@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clean Modulith Shop Demo</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #18212f;
+            --muted: #667085;
+            --line: #d0d7de;
+            --panel: #ffffff;
+            --soft: #f6f8fa;
+            --brand: #0f766e;
+            --brand-dark: #115e59;
+            --brand-soft: #e6f4f1;
+            --danger: #b42318;
+            --danger-soft: #fff1f0;
+            --ok: #167146;
+            --ok-soft: #e8f7ef;
+            --shadow: 0 18px 45px rgba(27, 39, 51, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(180deg, #ffffff 0, var(--soft) 280px), var(--soft);
+            color: var(--ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            line-height: 1.5;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+        }
+
+        .shell {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 72px;
+            gap: 16px;
+        }
+
+        .brand-mark {
+            display: grid;
+            grid-template-columns: 44px minmax(0, 1fr);
+            gap: 12px;
+            align-items: center;
+        }
+
+        .logo {
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            background: var(--brand-soft);
+            color: var(--brand-dark);
+            font-weight: 850;
+        }
+
+        h1,
+        h2,
+        p {
+            margin-top: 0;
+        }
+
+        h1 {
+            margin-bottom: 2px;
+            font-size: 24px;
+            letter-spacing: 0;
+        }
+
+        .subtitle,
+        .panel-kicker {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .environment {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 34px;
+            padding: 6px 10px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #ffffff;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--ok);
+        }
+
+        main {
+            padding: 30px 0 44px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 0.92fr) minmax(420px, 0.78fr);
+            gap: 16px;
+            align-items: start;
+        }
+
+        .workspace {
+            display: grid;
+            gap: 16px;
+            min-width: 0;
+        }
+
+        .panel,
+        .result {
+            min-width: 0;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel);
+            box-shadow: var(--shadow);
+        }
+
+        .panel {
+            padding: 20px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .panel-title {
+            margin-bottom: 3px;
+            font-size: 18px;
+            letter-spacing: 0;
+        }
+
+        .method,
+        .status {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            border-radius: 999px;
+            padding: 4px 9px;
+            background: var(--soft);
+            color: #344054;
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .method.post {
+            background: var(--brand-soft);
+            color: var(--brand-dark);
+        }
+
+        .status.ok {
+            background: var(--ok-soft);
+            color: var(--ok);
+        }
+
+        .status.error {
+            background: var(--danger-soft);
+            color: var(--danger);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        input,
+        select,
+        button {
+            font: inherit;
+        }
+
+        input,
+        select {
+            width: 100%;
+            min-height: 44px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: #ffffff;
+            color: var(--ink);
+            padding: 9px 11px;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+        }
+
+        button {
+            min-height: 42px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        .primary {
+            background: var(--brand);
+            color: #ffffff;
+        }
+
+        .primary:hover {
+            background: var(--brand-dark);
+        }
+
+        .secondary {
+            border-color: var(--line);
+            background: #ffffff;
+            color: var(--ink);
+        }
+
+        .danger {
+            border-color: color-mix(in srgb, var(--danger), var(--line) 40%);
+            color: var(--danger);
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .line-row,
+        .lookup {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 110px;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .lookup {
+            grid-template-columns: minmax(0, 1fr) auto;
+            margin-top: 16px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        #order-form .actions {
+            margin-top: 20px;
+        }
+
+        .compact-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .table-shell {
+            overflow: auto;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #ffffff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid var(--line);
+            padding: 10px 12px;
+            text-align: left;
+            vertical-align: middle;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        th {
+            background: var(--soft);
+            color: var(--muted);
+            font-weight: 800;
+        }
+
+        tbody tr {
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: var(--brand-soft);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        .amount {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            border-radius: 999px;
+            padding: 3px 8px;
+            background: var(--ok-soft);
+            color: var(--ok);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .badge.cancelled {
+            background: var(--danger-soft);
+            color: var(--danger);
+        }
+
+        .empty {
+            margin: 0;
+            padding: 14px;
+            border: 1px dashed var(--line);
+            border-radius: 8px;
+            color: var(--muted);
+            font-size: 13px;
+            background: var(--soft);
+        }
+
+        .divider {
+            height: 1px;
+            margin: 18px 0;
+            background: var(--line);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .product {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--soft);
+            padding: 10px;
+        }
+
+        .product strong,
+        .product span {
+            display: block;
+            font-size: 13px;
+        }
+
+        .product span {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .result {
+            position: sticky;
+            top: 98px;
+            overflow: hidden;
+        }
+
+        .response-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 18px 14px;
+            border-bottom: 1px solid var(--line);
+            background: #ffffff;
+        }
+
+        pre {
+            overflow: auto;
+            min-height: 430px;
+            max-height: 620px;
+            margin: 0;
+            border: 0;
+            background: #101828;
+            color: #ecfdf3;
+            padding: 18px;
+            font-size: 13px;
+            line-height: 1.45;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        @media (max-width: 820px) {
+            .grid,
+            .line-row,
+            .lookup,
+            .compact-actions,
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+                justify-content: center;
+                padding: 14px 0;
+            }
+
+            .environment {
+                white-space: normal;
+            }
+
+            .result {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="shell topbar">
+        <div class="brand-mark">
+            <div class="logo">ML</div>
+            <div>
+                <h1>Clean Modulith Shop Demo</h1>
+                <p class="subtitle">Static browser adapter calling the order and product APIs</p>
+            </div>
+        </div>
+        <div class="environment"><span class="dot"></span> Local H2 seed data</div>
+    </div>
+</header>
+
+<main class="shell">
+    <div class="grid">
+        <section class="workspace">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Orders</h2>
+                        <p class="panel-kicker">Create, fetch, cancel, or delete an order.</p>
+                    </div>
+                    <span class="method post">POST</span>
+                </div>
+
+                <form id="order-form">
+                    <div class="field">
+                        <label for="customerEmail">Customer email</label>
+                        <input id="customerEmail" name="customerEmail" type="email" value="learner@example.com" required>
+                    </div>
+
+                    <div class="line-row">
+                        <div>
+                            <label for="productId">Product</label>
+                            <select id="productId" name="productId" required>
+                                <option value="11111111-1111-1111-1111-111111111111">Clean Architecture Book - EUR 42.00</option>
+                                <option value="22222222-2222-2222-2222-222222222222">Domain-Driven Design Notes - EUR 18.50</option>
+                                <option value="33333333-3333-3333-3333-333333333333">Refactoring Mug - EUR 12.90</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="quantity">Quantity</label>
+                            <input id="quantity" name="quantity" type="number" min="1" step="1" value="2" required>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="primary" type="submit">Create order</button>
+                        <button class="secondary" type="button" id="invalid-product">Try unknown product</button>
+                    </div>
+                </form>
+
+                <div class="divider"></div>
+
+                <div class="lookup">
+                    <div>
+                        <label for="orderId">Order id</label>
+                        <input id="orderId" name="orderId" type="text" placeholder="Create an order or paste an id">
+                    </div>
+                    <button class="secondary" type="button" id="fetch-order">Fetch</button>
+                </div>
+
+                <div class="compact-actions">
+                    <button class="secondary" type="button" id="cancel-order">Cancel order</button>
+                    <button class="secondary danger" type="button" id="delete-order">Delete order</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Created orders</h2>
+                        <p class="panel-kicker">Click a row to fetch the order details.</p>
+                    </div>
+                    <button class="secondary" type="button" id="refresh-orders">Refresh</button>
+                </div>
+
+                <div class="table-shell" id="orders-table-shell" hidden>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th class="amount">Total</th>
+                            <th>Created</th>
+                        </tr>
+                        </thead>
+                        <tbody id="orders-table-body"></tbody>
+                    </table>
+                </div>
+                <p class="empty" id="orders-empty">No orders created yet.</p>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Products</h2>
+                        <p class="panel-kicker">Lookup one of the seeded catalog items.</p>
+                    </div>
+                    <span class="method">GET</span>
+                </div>
+
+                <div class="lookup">
+                    <div>
+                        <label for="lookupProductId">Product id</label>
+                        <select id="lookupProductId" name="lookupProductId" required>
+                            <option value="11111111-1111-1111-1111-111111111111">Clean Architecture Book</option>
+                            <option value="22222222-2222-2222-2222-222222222222">Domain-Driven Design Notes</option>
+                            <option value="33333333-3333-3333-3333-333333333333">Refactoring Mug</option>
+                        </select>
+                    </div>
+                    <button class="secondary" type="button" id="fetch-product">Fetch</button>
+                </div>
+
+                <div class="product-grid" aria-hidden="true">
+                    <div class="product">
+                        <strong>Clean Architecture Book</strong>
+                        <span>EUR 42.00</span>
+                    </div>
+                    <div class="product">
+                        <strong>DDD Notes</strong>
+                        <span>EUR 18.50</span>
+                    </div>
+                    <div class="product">
+                        <strong>Refactoring Mug</strong>
+                        <span>EUR 12.90</span>
+                    </div>
+                </div>
+
+                <div class="actions" style="margin-top: 12px;">
+                    <button class="secondary" type="button" id="unknown-product">Fetch unknown product</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="result">
+            <div class="response-head">
+                <div>
+                    <h2 class="panel-title">API Response</h2>
+                    <p class="panel-kicker">Latest request payload</p>
+                </div>
+                <p id="status" class="status">Ready</p>
+            </div>
+            <pre id="output">{}</pre>
+        </section>
+    </div>
+</main>
+
+<script>
+    const form = document.querySelector("#order-form");
+    const output = document.querySelector("#output");
+    const statusLine = document.querySelector("#status");
+    const orderIdInput = document.querySelector("#orderId");
+    const fetchOrderButton = document.querySelector("#fetch-order");
+    const cancelOrderButton = document.querySelector("#cancel-order");
+    const deleteOrderButton = document.querySelector("#delete-order");
+    const refreshOrdersButton = document.querySelector("#refresh-orders");
+    const ordersTableShell = document.querySelector("#orders-table-shell");
+    const ordersTableBody = document.querySelector("#orders-table-body");
+    const ordersEmpty = document.querySelector("#orders-empty");
+    const invalidProductButton = document.querySelector("#invalid-product");
+    const fetchProductButton = document.querySelector("#fetch-product");
+    const unknownProductButton = document.querySelector("#unknown-product");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        await createOrder(document.querySelector("#productId").value);
+    });
+
+    invalidProductButton.addEventListener("click", async () => {
+        await createOrder("99999999-9999-9999-9999-999999999999");
+    });
+
+    fetchOrderButton.addEventListener("click", async () => {
+        const orderId = orderIdInput.value.trim();
+        if (!orderId) {
+            showStatus("Enter an order id first.", "error");
+            return;
+        }
+
+        await callApi(`/orders/${orderId}`, {
+            method: "GET"
+        });
+    });
+
+    refreshOrdersButton.addEventListener("click", async () => {
+        await loadOrders();
+    });
+
+    cancelOrderButton.addEventListener("click", async () => {
+        const orderId = orderIdInput.value.trim();
+        if (!orderId) {
+            showStatus("Create or fetch an order first.", "error");
+            return;
+        }
+
+        await callApi(`/orders/${orderId}/cancel`, {
+            method: "POST"
+        });
+        await loadOrders({silent: true});
+    });
+
+    deleteOrderButton.addEventListener("click", async () => {
+        const orderId = orderIdInput.value.trim();
+        if (!orderId) {
+            showStatus("Create or fetch an order first.", "error");
+            return;
+        }
+
+        await callApi(`/orders/${orderId}`, {
+            method: "DELETE"
+        });
+        await loadOrders({silent: true});
+    });
+
+    fetchProductButton.addEventListener("click", async () => {
+        await fetchProduct(document.querySelector("#lookupProductId").value);
+    });
+
+    unknownProductButton.addEventListener("click", async () => {
+        await fetchProduct("99999999-9999-9999-9999-999999999999");
+    });
+
+    async function createOrder(productId) {
+        const payload = {
+            customerEmail: document.querySelector("#customerEmail").value,
+            items: [
+                {
+                    productId,
+                    quantity: Number(document.querySelector("#quantity").value)
+                }
+            ]
+        };
+
+        await callApi("/orders", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+        await loadOrders({silent: true});
+    }
+
+    async function fetchProduct(productId) {
+        await callApi(`/products/${productId}`, {
+            method: "GET"
+        });
+    }
+
+    async function loadOrders(settings = {}) {
+        if (!settings.silent) {
+            showStatus("Loading orders...", "");
+        }
+
+        try {
+            const response = await fetch("/orders", {
+                method: "GET"
+            });
+            const body = await response.json();
+
+            if (!response.ok) {
+                throw new Error(body.error || body.message || `Could not load orders: ${response.status}`);
+            }
+
+            if (!Array.isArray(body)) {
+                throw new Error("Could not load orders: API response is not a list");
+            }
+
+            renderOrders(body);
+
+            if (!settings.silent) {
+                output.textContent = JSON.stringify(body, null, 2);
+                showStatus(`${response.status} ${response.statusText}`, "ok");
+            }
+        } catch (error) {
+            renderOrders([]);
+
+            if (!settings.silent) {
+                output.textContent = JSON.stringify({message: error.message}, null, 2);
+                showStatus("Request failed", "error");
+            }
+        }
+    }
+
+    function renderOrders(orders) {
+        ordersTableBody.innerHTML = "";
+        ordersTableShell.hidden = orders.length === 0;
+        ordersEmpty.hidden = orders.length > 0;
+
+        for (const order of orders) {
+            const row = document.createElement("tr");
+            row.dataset.orderId = order.id;
+            row.innerHTML = `
+                <td>
+                    <strong>${escapeHtml(order.orderNumber)}</strong><br>
+                    <span class="mono">${escapeHtml(shortId(order.id))}</span>
+                </td>
+                <td>${escapeHtml(order.customerEmail)}</td>
+                <td><span class="badge ${order.status === "CANCELLED" ? "cancelled" : ""}">${escapeHtml(order.status)}</span></td>
+                <td class="amount">${formatMoney(order.total)}</td>
+                <td>${formatDate(order.placedAt)}</td>
+            `;
+            row.addEventListener("click", async () => {
+                orderIdInput.value = order.id;
+                await callApi(`/orders/${order.id}`, {
+                    method: "GET"
+                });
+            });
+            ordersTableBody.append(row);
+        }
+    }
+
+    async function callApi(url, options) {
+        showStatus("Calling API...", "");
+
+        try {
+            const response = await fetch(url, options);
+            const body = response.status === 204 ? {
+                message: "Order deleted",
+                status: response.status
+            } : await response.json();
+
+            output.textContent = JSON.stringify(body, null, 2);
+
+            if (body.id) {
+                orderIdInput.value = body.id;
+            }
+
+            showStatus(`${response.status} ${response.statusText}`, response.ok ? "ok" : "error");
+            return body;
+        } catch (error) {
+            output.textContent = JSON.stringify({message: error.message}, null, 2);
+            showStatus("Request failed", "error");
+            return null;
+        }
+    }
+
+    function showStatus(message, state) {
+        statusLine.textContent = message;
+        statusLine.className = `status ${state}`;
+    }
+
+    function shortId(id) {
+        return `${id.slice(0, 8)}...${id.slice(-4)}`;
+    }
+
+    function formatMoney(money) {
+        return new Intl.NumberFormat("de-DE", {
+            style: "currency",
+            currency: money.currency
+        }).format(money.amount);
+    }
+
+    function formatDate(value) {
+        return new Intl.DateTimeFormat("de-DE", {
+            dateStyle: "short",
+            timeStyle: "short"
+        }).format(new Date(value));
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+    }
+
+    loadOrders({silent: true});
+</script>
+</body>
+</html>
